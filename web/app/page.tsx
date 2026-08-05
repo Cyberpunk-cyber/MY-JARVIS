@@ -6,7 +6,7 @@ type ChatMessage = { role: "user" | "assistant"; content: string };
 type ApiHistoryItem = { role: string; content: string };
 type UiState = "idle" | "listening" | "thinking" | "found";
 
-const AI_SERVICE_URL = "http://localhost:8000";
+const AI_SERVICE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const SUGGESTIONS = [
   "Run a systems check",
