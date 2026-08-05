@@ -1,6 +1,3 @@
--- AURA OS — MVP schema (Phase 0/1)
--- Keep it small. Add tables only when a real feature needs them.
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS vector;
 
