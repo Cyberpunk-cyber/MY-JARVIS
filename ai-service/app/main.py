@@ -11,7 +11,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001"],
+    allow_origins=["http://localhost:3001", "https://aura-os-gold.vercel.app","https://aura-os-production-50b6.up.railway.app"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
