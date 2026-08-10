@@ -527,9 +527,9 @@ export default function Home() {
     amber: "#ffc56b",
   };
 
-  export default function ChatInterface() {
+  function ChatInterface() {
     const [input, setInput] = useState("");
-    const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [loading, setLoading] = useState(false);
 
     const handleSend = async () => {
@@ -952,3 +952,4 @@ export default function Home() {
       </div>
     );
   }
+}
