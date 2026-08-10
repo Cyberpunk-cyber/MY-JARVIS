@@ -20,12 +20,21 @@ docker-compose.yml
 
 ## Run it
 
+<<<<<<< HEAD
 1. Get an OpenRouter API key from openrouter.ai
 2. Create a file named `.env` in this folder (same level as docker-compose.yml) containing:
    ```
    OPENROUTER_API_KEY=your-key-here
    ```
    Docker Compose reads this automatically.
+=======
+1. Get a free Gemini API key from aistudio.google.com
+2. Create a file named `.env` in this folder (same level as docker-compose.yml) containing:
+   ```
+   GEMINI_API_KEY=your-key-here
+   ```
+   Docker Compose reads this automatically — no more `$env:GEMINI_API_KEY=...` every session.
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
 3. `docker compose up --build -d`
 4. Postgres will auto-run `schema.sql` on first boot
 5. Insert a fake org + some orders/customers manually (see "seed data" below)
@@ -56,12 +65,18 @@ INSERT INTO orders (organization_id, product_name, amount, order_date) VALUES
 
 ## Try these prompts against the agent
 
+<<<<<<< HEAD
 - "What's the weather in London?" — renders a live weather card in the web UI
 - "Open YouTube" — opens a new tab in the browser currently running AURA OS
 - "Set the lights amber" or "make the lights brighter" — adjusts the interface glow
 - "What was our revenue in the last 30 days?"
 
 The browser action uses the current browser's `window.open`; a normal web page cannot force a particular installed browser such as Chrome. Weather uses Open-Meteo and does not require a weather API key.
+=======
+- "What was our revenue in the last 30 days?"
+- "Find customers who haven't purchased in 90 days"
+- "Find inactive customers and draft a re-engagement email for each"  <- this one chains TWO tool calls, which is the real "agent" moment worth screenshotting for your portfolio
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
 
 ## What to build next (in order)
 

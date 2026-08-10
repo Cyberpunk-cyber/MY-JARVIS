@@ -1,12 +1,20 @@
 @tailwind base;
 @tailwind components;
+<<<<<<< HEAD
 
 :root {
   --hue: 195;
+=======
+@tailwind utilities;
+
+:root {
+  --hue: 195;              /* blue, idle */
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
   --glow: hsl(195, 100%, 55%);
   --glow-dim: hsla(195, 100%, 55%, 0.15);
   --glow-bright: hsla(195, 100%, 65%, 0.9);
   --bg: #05070a;
+<<<<<<< HEAD
   --panel: rgba(10, 18, 24, 0.78);
   --transition-speed: 0.6s;
   --ui-brightness: 1;
@@ -19,6 +27,12 @@
 [data-motion="off"] *::before,
 [data-motion="off"] *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 
+=======
+  --panel: rgba(10, 18, 24, 0.75);
+  --transition-speed: 0.6s;
+}
+
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
 [data-state="listening"] {
   --hue: 185;
   --glow: hsl(185, 100%, 55%);
@@ -48,6 +62,7 @@
   --transition-speed: 0.4s;
 }
 
+<<<<<<< HEAD
 *, *::before, *::after { box-sizing: border-box; }
 
 ::selection { background: var(--glow); color: var(--bg); }
@@ -57,6 +72,8 @@
 button, input { font: inherit; }
 button { cursor: pointer; }
 
+=======
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
 body {
   background: var(--bg);
   color: #dfeaf0;
@@ -235,6 +252,7 @@ body {
   50% { opacity: 0; }
 }
 
+<<<<<<< HEAD
 .weather-card {
   border: 1px solid var(--glow-dim);
   background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.18));
@@ -585,3 +603,7 @@ body {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: none; }
 }
+=======
+.scroll-thin::-webkit-scrollbar { width: 4px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: var(--glow-dim); }
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364

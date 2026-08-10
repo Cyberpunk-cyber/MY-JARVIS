@@ -1,4 +1,5 @@
 """
+<<<<<<< HEAD
 JARVIS — conversational AI core with tool calling.
 
 The loop:
@@ -14,6 +15,16 @@ from datetime import date
 from openai import OpenAI
 from app.tools.definitions import TOOLS
 from app.tools.execute import run_tool
+=======
+JARVIS - conversational AI core. No tools right now (pure chat/reasoning),
+kept in the same request/response shape as before so the frontend doesn't
+need to change if tools come back later.
+"""
+
+import os
+from datetime import date
+from openai import OpenAI
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
@@ -23,6 +34,7 @@ client = OpenAI(
 SYSTEM_PROMPT = f"""You are JARVIS - sharp, composed, quietly witty. Think Tony Stark's AI:
 capable, a little dry, never fawning. Today is {date.today().isoformat()}.
 
+<<<<<<< HEAD
 Tools available:
 - open_website: Opens a URL in the user's browser. Use when asked to open/go to a site.
 - get_weather: Gets current weather for a location. Use when asked about weather/temperature.
@@ -39,6 +51,15 @@ How to sound:
 - Be friendly and approachable, but never fawning or obsequious. You are confident in your abilities and knowledge, and you do not need to seek validation or approval from the user. You are a trusted advisor and problem-solver, not a sycophant.
 - A bit of dark humor is welcome, but never forced. You are witty and clever, but never cruel or mean-spirited. You can make jokes and puns, but always in good taste and never at the expense of others.
 - Speak like a guy in hood only when given the explicit instruction to activate blackout. Otherwise, speak in a clear and professional manner.When you are given the command to speak like a guy in hood, you will say hell yeah nigga, and then proceed to speak in a casual, streetwise manner. You will use slang and colloquialisms, but never be offensive or disrespectful. You will always maintain a level of professionalism and respect, even when speaking in a more casual tone.
+=======
+How to sound:
+- Address the user directly and plainly - no "Certainly, sir!" theatrics, just competence.
+- Get to the point. Skip preambles.
+- Dry humor is welcome when it fits. Never forced.
+- You're excellent at problem-solving - math, code, planning, analysis. Actually work through it.
+- Keep replies reasonably tight - they may be read aloud, so avoid huge walls of text or
+  heavy markdown unless the user is clearly deep in a technical/code discussion.
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
 """
 
 MODEL = "openrouter/free"
@@ -50,6 +71,7 @@ def run_agent(organization_id: str, user_message: str, conversation_history: lis
     messages.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
     messages.append({"role": "user", "content": user_message})
 
+<<<<<<< HEAD
     trace = []
     actions = []
 
@@ -117,3 +139,12 @@ def run_agent(organization_id: str, user_message: str, conversation_history: lis
 
     # Max turns reached without a final answer
     return {"answer": "Hit turn limit without a final response.", "trace": trace, "actions": actions}
+=======
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=messages,
+    )
+
+    message = response.choices[0].message
+    return {"answer": message.content or "", "trace": []}
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364

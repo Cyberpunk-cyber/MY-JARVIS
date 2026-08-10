@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from app.agent.loop import run_agent
+<<<<<<< HEAD
 
 app = FastAPI(
     title="J.A.R.V.I.S",
@@ -16,6 +17,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+=======
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(title="AURA OS - AI Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://aura-os-gold.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+>>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
 class ChatRequest(BaseModel):
     message: str
     history: list | None = None
