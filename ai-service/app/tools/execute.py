@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 """
 JARVIS tool implementations — real logic behind the tool schemas.
 
@@ -232,8 +232,6 @@ async def run_tool(name: str, args: dict) -> dict:
         return await fn(**args)
     except Exception as e:
         return {"text": f"Tool {name} error: {e}", "actions": []}
-=======
 """No tools currently active. See definitions.py."""
 
 TOOL_FUNCTIONS = {}
->>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
