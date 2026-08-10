@@ -30,7 +30,7 @@ type WeatherCard = {
 type ApiAction = BrowserAction | WeatherCard;
 type ApiResponse = { answer: string; trace?: unknown[]; actions?: ApiAction[] };
 
-const AI_SERVICE_URL = "http://localhost:8000","https://aura-os-production-50b6.up.railway.app";
+const AI_SERVICE_URL = "https://aura-os-production-50b6.up.railway.app";
 const SUGGESTIONS = ["What's the weather in London?", "Open YouTube", "Set the lights amber"];
 const DIRECT_SITES: Record<string, { url: string; label: string }> = {
   youtube: { url: "https://www.youtube.com", label: "YouTube" },
