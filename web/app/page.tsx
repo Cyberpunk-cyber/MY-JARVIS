@@ -438,7 +438,20 @@ export default function Home() {
       });
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
 
-      const data: ApiResponse = await res.json();
+      const raw = await res.text();
+      console.log("AI SERVICE RAW RESPONSE:", raw);
+
+      if (!raw.trim()) {
+        throw new Error("AI service returned an empty response");
+      }
+
+      let data: ApiResponse;
+
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        throw new Error(`AI service returned invalid JSON: ${raw.slice(0, 300)}`);
+      }
       const actions = (data.actions || []).filter((a): a is ApiAction => Boolean(a));
       const weather = actions.find((a): a is WeatherCard => a.type === "weather_card");
       const links = actions.filter((a): a is BrowserAction => a.type === "open_url");
