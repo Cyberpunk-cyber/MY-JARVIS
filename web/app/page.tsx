@@ -450,7 +450,9 @@ export default function Home() {
       try {
         data = JSON.parse(raw);
       } catch {
-        throw new Error(`AI service returned invalid JSON: ${raw.slice(0, 300)}`);
+        throw new Error(
+          `BACKEND RAW RESPONSE: [${raw.slice(0, 500)}]`
+        );
       }
       const actions = (data.actions || []).filter((a): a is ApiAction => Boolean(a));
       const weather = actions.find((a): a is WeatherCard => a.type === "weather_card");
