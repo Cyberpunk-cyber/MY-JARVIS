@@ -1,5 +1,4 @@
 """
-<<<<<<< HEAD
 JARVIS tool definitions — OpenAI-compatible function schemas.
 The LLM can call these when the user asks to open a website or check the weather.
 """
@@ -59,11 +58,3 @@ TOOLS = [
         },
     },
 ]
-=======
-JARVIS currently has no tools - pure conversational + problem-solving.
-Kept as an empty list (not deleted) so adding tools back later is a
-one-line change, same pattern as before.
-"""
-
-TOOLS = []
->>>>>>> ca262c362c049023e7358a9a8c480a5d2aacd364
