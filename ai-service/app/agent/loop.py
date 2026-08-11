@@ -10,7 +10,6 @@ The loop:
 
 import os
 import json
-import asyncio
 from datetime import date
 
 from openai import OpenAI
@@ -48,11 +47,11 @@ How to sound:
 """
 
 
-MODEL = "openrouter/free"
+MODEL = "meta-llama/llama-3.1-8b-instruct:free"
 MAX_TURNS = 3
 
 
-def run_agent(
+async def run_agent(
     organization_id: str,
     user_message: str,
     conversation_history: list | None = None,
@@ -114,10 +113,7 @@ def run_agent(
                 except json.JSONDecodeError:
                     args = {}
 
-                result = run_tool(name, args)
-
-                if asyncio.iscoroutine(result):
-                    result = asyncio.run(result)
+                result = await run_tool(name, args)
 
                 trace.append(
                     {
@@ -152,4 +148,3 @@ def run_agent(
         "trace": trace,
         "actions": actions,
     }
-    
