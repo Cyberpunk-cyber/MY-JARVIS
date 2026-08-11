@@ -29,13 +29,6 @@ class ChatRequest(BaseModel):
 
 @app.post("/agent/chat")
 async def chat(req: ChatRequest):
-    return run_agent(
-        organization_id="personal",
-        user_message=req.message,
-        conversation_history=req.history,
-    )
-@app.post("/agent/chat")
-async def chat(req: ChatRequest):
     return await run_agent(
         organization_id="personal",
         user_message=req.message,
