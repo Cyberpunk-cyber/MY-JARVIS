@@ -152,10 +152,10 @@ function ParticleField() {
 }
 
 /* ---------- The signature element: layered hex reticle ---------- */
-function CoreReticle() {
+function CoreReticle({ isSpeaking }: { isSpeaking: boolean }) {
   const coherence = useTicker(98, 1.4);
   return (
-    <div className="flex flex-col items-center">
+    <div className={`flex flex-col items-center ${isSpeaking ? "core-speaking" : ""}`}>
       <div className="reticle" aria-hidden="true">
         <svg viewBox="0 0 160 160">
           {/* rotating major tick ring */}
@@ -574,4 +574,200 @@ export default function Home() {
       </div>
     );
   }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    sendMessage(input);
+  }
+
+  return (
+    <main
+      data-state={dataState}
+      data-accent={accent}
+      data-motion={motionOn ? "on" : "off"}
+      style={rootStyle}
+      className="relative min-h-screen boot-in"
+    >
+      <div className="hud-bg" />
+      <div className="hud-grain" />
+      {motionOn && <ParticleField />}
+      <CornerReadouts />
+
+      <div className="relative z-10 flex min-h-screen flex-col px-6 py-8 md:px-10">
+        <header className="flex flex-wrap justify-end gap-2">
+          <button
+            type="button"
+            className={`action-link ${voiceOn ? "glow-border" : ""}`}
+            aria-pressed={voiceOn}
+            onClick={() => {
+              if (voiceOn) stopSpeaking();
+              setVoiceOn((v) => !v);
+            }}
+          >
+            {voiceOn ? "VOICE ON" : "VOICE OFF"}
+          </button>
+          <button type="button" className="action-link" onClick={() => setShowVoicePicker((v) => !v)}>
+            SELECT VOICE
+          </button>
+          <button type="button" className="action-link" onClick={() => setShowLights((v) => !v)}>
+            LIGHTING
+          </button>
+        </header>
+
+        {showVoicePicker && (
+          <div className="panel mt-4 px-4 py-3">
+            <p className="label mb-2">VOICE PROFILE</p>
+            <div className="scroll-thin flex max-h-48 flex-col gap-2 overflow-y-auto">
+              {availableVoices.map((v) => (
+                <div key={v.voiceURI} className="flex items-center justify-between gap-2">
+                  <label className="flex items-center gap-2 text-xs">
+                    <input
+                      type="radio"
+                      name="voice"
+                      checked={selectedVoiceURI === v.voiceURI}
+                      onChange={() => selectVoice(v.voiceURI)}
+                    />
+                    {v.name}
+                  </label>
+                  <button type="button" className="action-link" onClick={() => previewVoice(v)}>
+                    PREVIEW
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {showLights && (
+          <div className="panel mt-4 px-4 py-3">
+            <p className="label mb-2">INTERFACE LIGHTING</p>
+            <div className="mb-3 flex gap-2">
+              {(["violet", "cyan", "amber"] as Accent[]).map((a) => (
+                <button
+                  key={a}
+                  type="button"
+                  className={`light-swatch ${accent === a ? "selected" : ""}`}
+                  style={{ ["--swatch" as string]: accentColors[a] }}
+                  onClick={() => setAccent(a)}
+                >
+                  {a}
+                </button>
+              ))}
+            </div>
+            <label className="label mb-3 flex items-center gap-2">
+              BRIGHTNESS
+              <input
+                type="range"
+                min={0.65}
+                max={1.2}
+                step={0.05}
+                value={brightness}
+                onChange={(e) => setBrightness(Number(e.target.value))}
+              />
+            </label>
+            <div className="flex items-center gap-2">
+              <span className="label">ANIMATIONS</span>
+              <button
+                type="button"
+                className={`toggle ${motionOn ? "on" : ""}`}
+                aria-pressed={motionOn}
+                onClick={() => setMotionOn((v) => !v)}
+              >
+                <span />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col items-center justify-center py-8">
+          <p className="label mb-1">
+            {stateLabel}
+            {battleMode ? " · BATTLE MODE" : ""}
+          </p>
+          <CoreReticle isSpeaking={isSpeaking} />
+          {isSpeaking && <p className="telemetry mt-2">SPEAKING…</p>}
+        </div>
+
+        <div
+          className="panel scroll-thin mb-4 overflow-y-auto px-4 py-4"
+          style={{
+            maxHeight: "24vh",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+          }}
+        >
+          {messages.length === 0 && (
+            <div className="flex flex-col items-center gap-3 py-6 text-center">
+              <p className="label">NO ACTIVE TRANSMISSIONS</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {SUGGESTIONS.map((s) => (
+                  <button key={s} type="button" className="action-link" onClick={() => sendMessage(s)}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {messages.map((m, i) => (
+            <div key={i} className={`msg-in mb-4 ${m.role === "user" ? "text-right" : "text-left"}`}>
+              <p className={`text-sm ${m.role === "assistant" ? "glow-text" : ""}`}>
+                {m.role === "assistant" ? <DecodeText text={m.content} /> : m.content}
+              </p>
+              {m.weather && (
+                <div className={m.role === "user" ? "ml-auto" : ""}>
+                  <WeatherCardView weather={m.weather} />
+                </div>
+              )}
+              {m.links && m.links.length > 0 && (
+                <div className="mt-2 flex flex-wrap justify-end gap-2">
+                  {m.links.map((l, j) => (
+                    <a key={j} href={l.url} target="_blank" rel="noopener noreferrer" className="action-link">
+                      {l.label || l.url}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          <div ref={bottomRef} />
+        </div>
+
+        {error && (
+          <p className="label mb-2" style={{ color: "var(--glow-bright)" }} role="alert">
+            {error}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="panel flex items-center gap-3 px-4 py-3">
+          <button
+            type="button"
+            className={`action-link ${listening ? "glow-border" : ""}`}
+            onClick={toggleMic}
+            aria-pressed={listening}
+            aria-label="Toggle voice input"
+          >
+            🎙
+          </button>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask JARVIS…"
+            className="flex-1 border-none bg-transparent outline-none"
+            style={{ color: "#dfeaf0" }}
+          />
+          <button type="submit" className="action-link" disabled={!input.trim()}>
+            SEND
+          </button>
+        </form>
+      </div>
+
+      <Portal id="modal-root">
+        <div />
+      </Portal>
+    </main>
+  );
 }

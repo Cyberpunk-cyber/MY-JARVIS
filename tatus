@@ -1,0 +1,171 @@
+[1mdiff --git a/web/app/page.tsx b/web/app/page.tsx[m
+[1mindex fd8c480..08e13f1 100644[m
+[1m--- a/web/app/page.tsx[m
+[1m+++ b/web/app/page.tsx[m
+[36m@@ -527,385 +527,6 @@[m [mexport default function Home() {[m
+     amber: "#ffc56b",[m
+   };[m
+ [m
+[31m-  export default function ChatInterface() {[m
+[31m-    const [input, setInput] = useState("");[m
+[31m-    const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);[m
+[31m-    const [loading, setLoading] = useState(false);[m
+[31m-[m
+[31m-    const handleSend = async () => {[m
+[31m-      if (!input.trim() || loading) return;[m
+[31m-[m
+[31m-      const userMessage = input;[m
+[31m-      setInput("");[m
+[31m-[m
+[31m-      // 1. Add user message and a placeholder for assistant response[m
+[31m-      setMessages((prev) => [[m
+[31m-        ...prev,[m
+[31m-        { role: "user", content: userMessage },[m
+[31m-        { role: "assistant", content: "" },[m
+[31m-      ]);[m
+[31m-      setLoading(true);[m
+[31m-[m
+[31m-      try {[m
+[31m-        // 2. Fetch the streaming endpoint[m
+[31m-        const response = await fetch("https://aura-os-production-50b6.up.railway.app/agent/chat", {[m
+[31m-          method: "POST",[m
+[31m-          headers: { "Content-Type": "application/json" },[m
+[31m-          body: JSON.stringify({ message: userMessage, history: messages }),[m
+[31m-        });[m
+[31m-[m
+[31m-        if (!response.body) throw new Error("No response body");[m
+[31m-[m
+[31m-        // 3. Set up the stream reader[m
+[31m-        const reader = response.body.getReader();[m
+[31m-        const decoder = new TextDecoder();[m
+[31m-        let assistantResponse = "";[m
+[31m-[m
+[31m-        while (true) {[m
+[31m-          const { value, done } = await reader.read();[m
+[31m-          if (done) break;[m
+[31m-[m
+[31m-          // Decode binary stream chunk to text[m
+[31m-          const chunk = decoder.decode(value, { stream: true });[m
+[31m-[m
+[31m-          // Parse SSE lines (formatted as "data: {...}\n\n")[m
+[31m-          const lines = chunk.split("\n\n");[m
+[31m-          for (const line of lines) {[m
+[31m-            if (line.startsWith("data: ")) {[m
+[31m-              try {[m
+[31m-                const data = JSON.parse(line.replace("data: ", ""));[m
+[31m-                if (data.text) {[m
+[31m-                  assistantResponse += data.text;[m
+[31m-[m
+[31m-                  // 4. Update the last message continuously as text streams in[m
+[31m-                  setMessages((prev) => {[m
+[31m-                    const newMessages = [...prev];[m
+[31m-                    newMessages[newMessages.length - 1] = {[m
+[31m-                      role: "assistant",[m
+[31m-                      content: assistantResponse,[m
+[31m-                    };[m
+[31m-                    return newMessages;[m
+[31m-                  });[m
+[31m-                }[m
+[31m-              } catch (e) {[m
+[31m-                console.error("Error parsing stream chunk:", e);[m
+[31m-              }[m
+[31m-            }[m
+[31m-          }[m
+[31m-        }[m
+[31m-      } catch (err) {[m
+[31m-        console.error("Streaming error:", err);[m
+[31m-      } finally {[m
+[31m-        setLoading(false);[m
+[31m-      }[m
+[31m-    };[m
+[31m-    return ([m
+[31m-      <>[m
+[31m-        <div[m
+[31m-          data-state={dataState}[m
+[31m-          data-accent={accent}[m
+[31m-          data-motion={motionOn ? "on" : "off"}[m
+[31m-          className="min-h-screen relative"[m
+[31m-          style={rootStyle}[m
+[31m-        >[m
+[31m-          <div className="hud-bg" />[m
+[31m-          <div className="hud-grain" />[m
+[31m-          <ParticleField />[m
+[31m-          <CornerReadouts />[m
+[31m-          <div className="flex flex-col h-screen bg-black text-white p-4">[m
+[31m-            <div className="flex-1 overflow-y-auto space-y-4">[m
+[31m-              {messages.map((msg, idx) => ([m
+[31m-                <div key={idx} className={msg.role === "user" ? "text-right" : "text-left"}>[m
+[31m-                  <span className="inline-block p-2 rounded bg-zinc-800">[m
+[31m-                    {msg.content || (loading && idx === messages.length - 1 ? "Thinking..." : "")}[m
+[31m-                  </span>[m
+[31m-                </div>[m
+[31m-              ))}[m
+[31m-            </div>[m
+[31m-            <div className="flex gap-2 pt-4">[m
+[31m-              <input[m
+[31m-                value={input}[m
+[31m-                onChange={(e) => setInput(e.target.value)}[m
+[31m-                onKeyDown={(e) => e.key === "Enter" && handleSend()}[m
+[31m-                className="flex-1 p-2 bg-zinc-900 border border-zinc-700 rounded text-white"[m
+[31m-                placeholder="Ask AURA..."[m
+[31m-              />[m
+[31m-              <button onClick={handleSend} className="px-4 py-2 bg-blue-600 rounded">[m
+[31m-                Send[m
+[31m-              </button>[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-          <main className="relative z-10 min-h-screen flex flex-col items-center px-4 py-6 sm:px-6 sm:py-10">[m
+[31m-            <div className="w-full max-w-3xl flex flex-col flex-1 min-h-0">[m
+[31m-              <header className="flex items-start justify-between gap-4 mb-8 boot-in">[m
+[31m-                <div>[m
+[31m-                  <h1 className="display-font text-2xl sm:text-3xl font-bold glow-text tracking-widest">[m
+[31m-                    J.A.R.V.I.S.[m
+[31m-                  </h1>[m
+[31m-                  <p className="text-xs tracking-[0.3em] mt-1" style={{ color: "var(--glow)" }}>[m
+[31m-                    {battleMode ? "BATTLE PROTOCOL ACTIVE" : stateLabel}[m
+[31m-                    <span className="blink">_</span>[m
+[31m-                  </p>[m
+[31m-                </div>[m
+[31m-                <div className="flex flex-wrap justify-end items-center gap-2 relative">[m
+[31m-                  {isSpeaking && ([m
+[31m-                    <button[m
+[31m-                      onClick={stopSpeaking}[m
+[31m-                      className="panel px-3 py-1.5 text-xs display-font tracking-wider glow-text"[m
+[31m-                      aria-label="Stop speaking"[m
+[31m-                    >[m
+[31m-                      ■ STOP[m
+[31m-                    </button>[m
+[31m-                  )}[m
+[31m-                  <button[m
+[31m-                    onClick={() => setShowLights((v) => !v)}[m
+[31m-                    className="panel px-3 py-1.5 text-xs display-font tracking-wider"[m
+[31m-                    style={{ color: accentColors[accent] }}[m
+[31m-                    aria-expanded={showLights}[m
+[31m-                  >[m
+[31m-                    ◈ LIGHTS[m
+[31m-                  </button>[m
+[31m-                  <button[m
+[31m-                    onClick={() => setShowVoicePicker((v) => !v)}[m
+[31m-                    className="panel px-3 py-1.5 text-xs display-font tracking-wider"[m
+[31m-                    style={{ color: "#9aabb2" }}[m
+[31m-                    aria-expanded={showVoicePicker}[m
+[31m-                    aria-label="Choose voice"[m
+[31m-                  >[m
+[31m-                    ⚙[m
+[31m-                  </button>[m
+[31m-                  <button[m
+[31m-                    onClick={() => setVoiceOn((v) => !v)}[m
+[31m-                    className="panel px-3 py-1.5 text-xs display-font tracking-wider"[m
+[31m-                    style={{ color: voiceOn ? "var(--glow-bright)" : "#73858d" }}[m
+[31m-                    aria-pressed={voiceOn}[m
+[31m-                  >[m
+[31m-                    VOICE {voiceOn ? "ON" : "OFF"}[m
+[31m-                  </button>[m
+[31m-                </div>[m
+[31m-              </header>[m
+[31m-[m
+[31m-              <div className="flex justify-center mb-10">[m
+[31m-                <CoreReticle />[m
+[31m-              </div>[m
+[31m-[m
+[31m-              <section className="panel p-4 sm:p-5 flex-1 flex flex-col min-h-0

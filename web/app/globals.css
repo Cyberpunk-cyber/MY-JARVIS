@@ -587,3 +587,114 @@ body {
 .scroll-thin::-webkit-scrollbar { width: 4px; }
 .scroll-thin::-webkit-scrollbar-thumb { background: var(--glow-dim); } 
 
+/* ============================================================
+   APPEND TO globals.css
+   Fixed button sizing (mobile), metallic button treatment,
+   and distinct listening / thinking / speaking core behaviors
+   ============================================================ */
+
+/* --- Fixed-size interactive elements so buttons don't shrink/wrap awkwardly on mobile --- */
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0 0.9rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  /* metallic surface: soft top highlight + inset shadow + subtle drop shadow */
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)), var(--panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.5),
+    0 1px 4px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+.action-link:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.light-swatch {
+  min-height: 2rem;
+  min-width: 4.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 520px) {
+  .action-link,
+  .light-swatch {
+    min-height: 2.5rem;
+    font-size: 0.72rem;
+  }
+}
+
+/* --- Listening: core implodes inward, pulling toward center --- */
+[data-state="listening"] .reticle {
+  animation: pull-in 0.9s ease-in-out infinite;
+}
+@keyframes pull-in {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.93);
+  }
+}
+[data-state="listening"] .reticle-core {
+  animation: implode 0.9s ease-in-out infinite;
+}
+@keyframes implode {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.5);
+    filter: drop-shadow(0 0 18px var(--glow-bright));
+  }
+}
+
+/* --- Thinking: hex core morphs through irregular geometries, ticks spin fast --- */
+[data-state="thinking"] .reticle-core {
+  animation: morph 1.1s ease-in-out infinite;
+}
+@keyframes morph {
+  0%,
+  100% {
+    clip-path: polygon(89px 80px, 84.5px 87.79px, 75.5px 87.79px, 71px 80px, 75.5px 72.21px, 84.5px 72.21px);
+  }
+  33% {
+    clip-path: polygon(90px 70px, 88px 90px, 68px 88px, 70px 68px, 84px 65px, 92px 78px);
+  }
+  66% {
+    clip-path: polygon(78px 66px, 92px 74px, 90px 92px, 72px 90px, 66px 76px, 80px 64px);
+  }
+}
+[data-state="thinking"] .reticle-ticks {
+  animation-duration: 1.4s;
+}
+
+/* --- Speaking: rhythmic pulsing tied to voice synth, driven by a class (not data-state,
+   since the UI can be speaking while state is idle/found) --- */
+.core-speaking .reticle-core {
+  animation: speak-pulse 0.55s ease-in-out infinite;
+}
+@keyframes speak-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px var(--glow));
+  }
+  50% {
+    transform: scale(1.22);
+    filter: drop-shadow(0 0 22px var(--glow-bright));
+  }
+}
+.core-speaking .reticle-arc {
+  animation: arc-sweep 0.55s ease-in-out infinite;
+}
