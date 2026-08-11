@@ -47,7 +47,7 @@ How to sound:
 """
 
 
-MODEL = "meta-llama/llama-3.1-8b-instruct:free"
+MODEL = "meta-llama/llama-3.3-70b-instruct:free"
 MAX_TURNS = 3
 
 
